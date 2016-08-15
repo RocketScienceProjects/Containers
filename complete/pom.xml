@@ -18,6 +18,7 @@
     </parent>
 
     <properties>
+    	<docker.resource.targetPath>/</docker.resource.targetPath>
     	<docker.image.prefix>springio</docker.image.prefix>
         <java.version>1.8</java.version>
     </properties>
@@ -29,22 +30,42 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
     <!-- tag::plugin[] -->
-			<plugin>
+			<!-- <plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.2.3</version>
+				<version>0.4.11</version>
 				<configuration>
 					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
 					<dockerDirectory>src/main/docker</dockerDirectory>
 					<resources>
 						<resource>
-							<targetPath>/</targetPath>
+							<targetPath>${docker.resource.targetPath}</targetPath>
 							<directory>${project.build.directory}</directory>
 							<include>${project.build.finalName}.jar</include>
 						</resource>
 					</resources>
 				</configuration>
-			</plugin>
+			</plugin> -->
+			 <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.15.3</version>
+                <configuration>
+                    <!-- <dockerHost>http://127.0.0.1:2375</dockerHost> -->
+                    <verbose>true</verbose>
+                    <images>
+                        <image>
+                            <name>${docker.image.prefix}/${project.artifactId}</name>
+                            <build>
+                                <dockerFile>Dockerfile</dockerFile>
+                                <assembly>
+                                    <descriptorRef>artifact</descriptorRef>
+                                </assembly>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
     <!-- end::plugin[] -->
         </plugins>
     </build>
